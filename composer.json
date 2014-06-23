@@ -1,0 +1,42 @@
+{
+    "name": "spindle/stream",
+    "description": "Iterator builder like Java8 Stream API",
+    "license": "CC0-1.0",
+    "keywords": ["array", "collection", "lazy", "iterator", "generator"],
+    "type": "library",
+    "authors": [
+        {
+            "name": "Hiraku NAKANO",
+            "email": "hiraku@tojiru.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spindle\\Stream\\": "src/"
+        },
+        "files": [
+            "src/utility.php"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "apigen/apigen": "*",
+        "pdepend/pdepend": "*",
+        "nette/nette": "<2.2",
+        "dg/texy": "<v2.5"
+    },
+    "archive": {
+        "exclude": [
+            "tests/",
+            "builds/",
+            "Gruntfile.coffee",
+            "apigen.neon",
+            "phpunit.xml.dist",
+            "phpunit.xml",
+            "package.json"
+        ]
+    }
+}
