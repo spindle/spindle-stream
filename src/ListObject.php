@@ -12,7 +12,7 @@ final class ListObject implements
     static function zip()
     {
         $args = func_get_args();
-        array_unshift(null, $args);
+        array_unshift($args, null);
         return new self(call_user_func_array('array_map', $args));
     }
 
@@ -31,9 +31,9 @@ final class ListObject implements
         $this->arr = $arr;
     }
 
-    function toArray()
+    function toArray(&$result = null)
     {
-        return $this->arr;
+        return $result = $this->arr;
     }
 
     function push(/* arg1, arg2, arg3, ... */)
@@ -68,10 +68,52 @@ final class ListObject implements
         return new self($mapped);
     }
 
-    function walk($func)
+    function filter($func)
     {
         $func = Lambda::create('$_', $func, true);
+        $filtered = array_filter($this->arr, $func);
+        return new self($filtered);
+    }
+
+    function reduce($func, $initial=null)
+    {
+        $func = Lambda::create('$a,$b', $func, true);
+        return array_reduce($this->arr, $func, $initial);
+    }
+
+    function walk($func)
+    {
+        $func = Lambda::create('$_', $func, false);
         array_walk($this->arr, $func);
+    }
+
+    function sort($collator = \SORT_REGULAR)
+    {
+        if (is_int($collator)) {
+            sort($this->arr, $collator);
+        } else {
+            $collator = Lambda::create('$a,$b', $collator, true);
+            usort($this->arr, $collator);
+        }
+
+        return $this;
+    }
+
+    function rsort($collator = \SORT_REGULAR)
+    {
+        $this->sort($collator);
+        $this->arr = array_reverse($this->arr);
+        return $this;
+    }
+
+    function sortBy($collector, $flags = \SORT_REGULAR, $order = \SORT_ASC)
+    {
+        if (!is_callable($collator)) throw new \InvalidArgumentException;
+        $collector = Lambda::create('$_', $collector, true);
+        $mapped = array_map($collector, $this->arr);
+        array_multisort($mapped, $flags, $order, $this->arr);
+
+        return $this;
     }
 
     function count()
@@ -101,8 +143,7 @@ final class ListObject implements
 
     function export(&$result)
     {
-        $result = $this;
-        return $this;
+        return $result = $this;
     }
 
     function __call($method, $args)
@@ -119,6 +160,12 @@ final class ListObject implements
         $func = 'array_' . $method;
         if (!function_exists($func)) {
             throw new \BadMethodCallException("$func is not exists.");
+        }
+
+        foreach ($args as $i => $a) {
+            if ($a instanceof self) {
+                $args[$i] = $a->arr;
+            }
         }
 
         $args = array_merge(array(&$this->arr), $args);

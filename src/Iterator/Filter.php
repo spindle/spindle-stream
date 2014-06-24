@@ -1,7 +1,8 @@
 <?php
 namespace Spindle\Stream\Iterator;
 
-class Filter extends \FilterIterator
+class Filter extends \FilterIterator implements
+    \Spindle\Stream\InfiniteInterface
 {
     private $callback;
 

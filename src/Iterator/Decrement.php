@@ -1,14 +1,16 @@
 <?php
 namespace Spindle\Stream\Iterator;
 
-final class Sequence implements \SeekableIterator
+final class Decrement implements
+    \SeekableIterator,
+    \Spindle\Stream\InfiniteInterface
 {
     private $i;
-    private $offset;
+    private $init;
 
-    function __construct($offset=0)
+    function __construct($init=\PHP_INT_MAX)
     {
-        $this->i = $this->offset = $offset;
+        $this->i = $this->init = $init;
     }
 
     function seek($position)
@@ -28,12 +30,12 @@ final class Sequence implements \SeekableIterator
 
     function next()
     {
-        ++$this->i;
+        --$this->i;
     }
 
     function rewind()
     {
-        $this->i = $this->offset;
+        $this->i = $this->init;
     }
 
     function valid()

@@ -7,6 +7,9 @@ namespace Spindle;
 
 class Stream
 {
+    /**
+     * @return \IteratorAggregate
+     */
     static function _($init)
     {
         if (is_array($init)) {
@@ -31,16 +34,16 @@ class Stream
 
     /**
      * @param int $initial
-     * @return Stream\Iterator\Sequence
+     * @return Stream\Iterator\Increment
      */
-    static function sequence($initial = 0)
+    static function increment($initial = 0)
     {
-        return new Stream\Infinite(new Stream\Iterator\Sequence($initial));
+        return new Stream\Infinite(new Stream\Iterator\Increment($initial));
     }
 
     static function range($offset, $count)
     {
-        return self::sequence($offset)->limit(0, $count);
+        return self::increment($offset)->limit(0, $count);
     }
 
     /**

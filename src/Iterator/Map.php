@@ -1,7 +1,8 @@
 <?php
 namespace Spindle\Stream\Iterator;
 
-class Map extends \IteratorIterator
+class Map extends \IteratorIterator implements
+    \Spindle\Stream\InfiniteInterface
 {
     private $func;
 
