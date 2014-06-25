@@ -116,6 +116,27 @@ final class ListObject implements
         return $this;
     }
 
+    function distinct($flags = \SORT_REGULAR)
+    {
+        return $this->unique($flags);
+    }
+
+    function directProduct($arr)
+    {
+        if ($arr instanceof self) {
+            $arr = $arr->arr;
+        }
+
+        $result = array();
+        foreach ($this->arr as $v1) {
+            foreach ($arr as $v2) {
+                $result[] = array_merge((array)$v1, (array)$v2);
+            }
+        }
+
+        return new self($result);
+    }
+
     function count()
     {
         return count($this->arr);
@@ -150,12 +171,6 @@ final class ListObject implements
     {
         $method = preg_replace('/[A-Z]/', '_\0', $method);
         $lastPos = strlen($method) - 1;
-        if ($method[$lastPos] === '_') {
-            $method = substr($method, 0, -1);
-            $chain = true;
-        } else {
-            $chain = false;
-        }
 
         $func = 'array_' . $method;
         if (!function_exists($func)) {
@@ -173,8 +188,6 @@ final class ListObject implements
 
         if (is_array($res)) {
             return new self($res);
-        } elseif ($chain) {
-            return $this;
         } else {
             return $res;
         }
