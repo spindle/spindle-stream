@@ -5,7 +5,7 @@
  */
 namespace Spindle;
 
-class Stream
+final class Stream
 {
     /**
      * @return \IteratorAggregate
@@ -55,7 +55,7 @@ class Stream
         return new Stream\Infinite(new Stream\Iterator\Yes($yes));
     }
 
-    static function recur($init, $func)
+    static function iterate($init, $func)
     {
         $func = Stream\Lambda::create('$_', $func, true);
         return new Stream\Infinite(
@@ -63,7 +63,7 @@ class Stream
         );
     }
 
-    static function recur2($init1, $init2, $func)
+    static function iterate2($init1, $init2, $func)
     {
         $func = Stream\Lambda::create('$a,$b', $func, true);
         return new Stream\Infinite(

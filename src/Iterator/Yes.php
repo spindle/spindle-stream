@@ -5,7 +5,7 @@ final class Yes implements
     \SeekableIterator,
     \Spindle\Stream\Infinite
 {
-    private $yes;
+    private $yes, $i=0;
 
     function __construct($yes = 'yes')
     {
@@ -14,6 +14,7 @@ final class Yes implements
 
     function seek($position)
     {
+        $this->i = $position;
     }
 
     function current()
@@ -23,15 +24,17 @@ final class Yes implements
 
     function key()
     {
-        return 1;
+        return $this->i;
     }
 
     function next()
     {
+        ++$this->i;
     }
 
     function rewind()
     {
+        $this->i = 0;
     }
 
     function valid()

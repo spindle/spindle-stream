@@ -1,6 +1,6 @@
 <?php
 namespace Spindle\Stream;
 
-class Infinite extends Base
+final class Infinite extends Base
 {
 }

@@ -13,6 +13,9 @@ class RecurrenceRelation implements \Iterator
 
     function __construct($init, $func)
     {
+        if (! is_callable($func)) {
+            throw new \InvalidArgumentException('func is not callable. passed '.gettype($func));
+        }
         $this->init = $init;
         $this->func = $func;
     }
@@ -24,6 +27,9 @@ class RecurrenceRelation implements \Iterator
 
     function current()
     {
+        if (isset($this->currentCache)) {
+            return $this->currentCache;
+        }
         if ($this->i) {
             $func = $this->func;
             return $this->currentCache = $func($this->prev);

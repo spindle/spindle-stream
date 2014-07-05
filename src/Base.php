@@ -16,10 +16,13 @@ abstract class Base implements \IteratorAggregate
         return $this->it;
     }
 
-    function map($func)
+    function map($func, $kfunc=null)
     {
         $func = Lambda::create('$_', $func, true);
-        return new static(new Iterator\Map($this->it, $func));
+        if ($kfunc) {
+            $kfunc = Lambda::create('$_', $kfunc, true);
+        }
+        return new static(new Iterator\Map($this->it, $func, $kfunc));
     }
 
     function filter($func)
@@ -36,8 +39,7 @@ abstract class Base implements \IteratorAggregate
 
     function cache($flags = \CachingIterator::FULL_CACHE)
     {
-        $this->it = new \CachingIterator($this->it, $flags);
-        return $this;
+        return new static(new \CachingIterator($this->it, $flags));
     }
 
     function limit($a, $b=null)

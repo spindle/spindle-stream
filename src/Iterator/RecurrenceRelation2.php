@@ -8,8 +8,7 @@ class RecurrenceRelation2 implements \Iterator
         , $init2
         , $func
         , $i = 0
-        , $prev = null
-        , $prevprev = null
+        , $prev = array(null, null)
         , $currentCache = null
         ;
 
@@ -28,17 +27,17 @@ class RecurrenceRelation2 implements \Iterator
     function current()
     {
         if ($this->currentCache) return $this->currentCache;
-        if ($this->i === 0) return $this->currentCache = $this->init;
-        if ($this->i === 1) return $this->currentCache = $this->init2;
+        if ($this->i < 2) {
+            return $this->currentCache = $this->i === 0 ? $this->init : $this->init2;
+        }
 
         $func = $this->func;
-        return $this->currentCache = $func($this->prevprev, $this->prev);
+        return $this->currentCache = $func($this->prev[$this->i & 1], $this->prev[~$this->i & 1]);
     }
 
     function next()
     {
-        $this->prevprev = $this->prev;
-        $this->prev = isset($this->currentCache)
+        $this->prev[$this->i & 1] = isset($this->currentCache)
                     ? $this->currentCache
                     : $this->current();
         $this->currentCache = null;
@@ -53,7 +52,6 @@ class RecurrenceRelation2 implements \Iterator
     function rewind()
     {
         $this->i = 0;
-        $this->prev = null;
-        $this->prevprev = null;
+        $this->prev = array(null, null);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Spindle\Stream;
 
-class Finite extends Base implements FiniteInterface
+final class Finite extends Base implements FiniteInterface
 {
     function append()
     {
@@ -11,6 +11,9 @@ class Finite extends Base implements FiniteInterface
         foreach (func_get_args() as $it) {
             if ($it instanceof InfiniteInterface || $it instanceof \InfiniteIterator) {
                 $infinite = true;
+            }
+            if ($it instanceof \IteratorAggregate) {
+                $it = $it->getIterator();
             }
             $ait->append($it);
         }
@@ -31,29 +34,27 @@ class Finite extends Base implements FiniteInterface
 
     function sum(&$result = null)
     {
-        $result = array_sum(iterator_to_array($this->it));
-        return $result;
+        $arr = $this->toList();
+        return $result = $arr->sum();
     }
 
     function average(&$result = null)
     {
-        $result = array_sum(iterator_to_array($this->it)) / iterator_count($this->it);
-        return $result;
+        $arr = $this->toList();
+        return $result = $arr->average();
     }
 
     function product(&$result = null)
     {
-        $result = array_product(iterator_to_array($this->it));
-        return $result;
+        $arr = $this->toList();
+        return $result = $this->product();;
     }
 
-    function sort($comparator = null)
+    function sort($comparator = \SORT_REGULAR)
     {
-        if (is_callable($comparator)) {
-        }
-        $arr = iterator_to_array($this->it);
-        sort($arr);
-        return new Finite(new \ArrayIterator($arr));
+        $arr = $this->toList();
+        $arr->sort($comparator);
+        return $arr;
     }
 
 

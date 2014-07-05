@@ -1,8 +1,23 @@
 <?php
 namespace Spindle\Stream;
 
+/**
+ * create_function() Utility Class
+ *
+ * - avoid memory leak
+ * - always callable with () in PHP 5.3
+ *
+ */
 final class Lambda
 {
+    /**
+     * forbidden. (static class)
+     * @codeCoverageIgnore
+     */
+    private function __construct()
+    {
+    }
+
     static function cache($args, $code)
     {
         static $cache = array();
@@ -20,8 +35,8 @@ final class Lambda
         }
 
         if (is_callable($mixed)) {
-            if ($callable) return $mixed;
-            if (is_string($mixed)) return $mixed;
+            if ($callable || is_string($mixed)) return $mixed;
+            // @codeCoverageIgnoreStart
             if (is_array($mixed)) {
                 list($obj, $method) = $mixed;
                 if (is_string($obj)) {
@@ -34,26 +49,11 @@ final class Lambda
                 }
             }
             return $mixed;
+            // @codeCoverageIgnoreEnd
         } elseif (is_string($mixed)) {
             return self::cache($args, $return ? "return $mixed;" : "$mixed;");
         }
-    }
 
-    static function createArgsString($num)
-    {
-        $num = (int)$num;
-        if ($num < 1) {
-            return '';
-        }
-        if ($num === 1) {
-            return '$_';
-        }
-        $args = array();
-        $varname = 'a';
-        while ($num--) {
-            $args[] = '$' . $varname++;
-        }
-
-        return implode(',', $args);
+        throw new \InvalidArgumentException('$mixed must be callable');
     }
 }

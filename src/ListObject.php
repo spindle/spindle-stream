@@ -144,7 +144,7 @@ final class ListObject implements
 
     function offsetExists($offset)
     {
-        return array_key_exists($this->arr, $offset);
+        return isset($this->arr[$offset]);
     }
 
     function offsetGet($offset)
