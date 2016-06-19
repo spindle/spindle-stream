@@ -1,6 +1,11 @@
 {
+  "name": "spindle-stream",
+  "scripts": {
+    "test": "vendor/bin/phpunit --colors=always",
+    "start": "gulp start"
+  },
   "devDependencies": {
-    "gulp": "~3.8.5",
-    "gulp-connect": "~2.0.5"
+    "browser-sync": "^2.11.0",
+    "gulp": "^3.9.0"
   }
 }
